@@ -66,4 +66,8 @@ This project is licensed under the MIT License.
 
 ---
 
-Made with ❤️ by Aditya
+# Made with ❤️ by Aditya
+
+# orbitalx
+
+Modern responsive landing page for a fictional aerospace company built with HTML, CSS, and JavaScript.
