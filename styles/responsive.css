@@ -74,6 +74,101 @@
     .footer__grid {
         gap: var(--space-xl);
     }
+
+    /* ===============================================================
+       CENTERED LAYOUT — tablet & mobile (cascades down through the
+       480px block below too, since 480 < 768). Applies to every
+       section, hero included, per explicit request. Exception:
+       .navbar__mobile-actions buttons stay full-width — see chat,
+       that's a deliberate usability call, not an oversight.
+       =============================================================== */
+
+    /* Hero */
+    .hero__inner {
+        align-items: center;
+    }
+
+    .hero__content {
+        align-items: center;
+        text-align: center;
+    }
+
+    .hero__actions {
+        justify-content: center;
+    }
+
+    .hero__stat {
+        align-items: center;
+        text-align: center;
+    }
+
+    .hero__meta {
+        align-items: center;
+        text-align: center;
+    }
+
+    /* Technology / Solutions cards */
+    .technology__card-body,
+    .solutions__card-body {
+        align-items: center;
+        text-align: center;
+    }
+
+    /* Resources: both halves of the duplicate-class workaround need
+       the override, same selectors as resources.css for equal
+       specificity + later source order. */
+    .resources__card > .resources__card-body {
+        align-items: center;
+    }
+
+    .resources__card-body .resources__card-body {
+        align-items: center;
+        text-align: center;
+    }
+
+    /* Mission cards */
+    .mission__card-body {
+        align-items: center;
+        text-align: center;
+    }
+
+    .mission__card-progress__wrapper {
+        text-align: center;
+    }
+
+    /* Timeline: overrides company.css's own 960px row-layout entirely
+       — icon stacks above centered text instead of sitting to its
+       left. The connecting line re-centers under the now-centered
+       icons instead of sitting at a fixed left offset. */
+    .timeline__item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .timeline__body {
+        align-items: center;
+        text-align: center;
+    }
+
+    .timeline__grid::before {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Footer */
+    .footer__col {
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer__nav {
+        align-items: center;
+    }
+
+    .navbar__mobile-link {
+        text-align: center;
+    }
 }
 
 /* ===================================================================
@@ -120,22 +215,17 @@
 
     .hero__actions {
         flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-    }
-
-    .hero__actions .btn {
-        width: 100%;
+        align-items: center;
     }
 
     .hero__meta {
         width: 100%;
     }
 
-    /* Timeline nodes shrink further; the connecting line offset
-       (left: calc(size-icon-lg / 2), set in company.css's own 960px
-       block) still lines up since it's already keyed to
-       --size-icon-lg, not a fixed pixel value. */
+    /* Timeline nodes shrink further. The connecting line is already
+       centered via the 768px block above (left: 50%) and that rule
+       cascades down to this width too — no further line-position
+       change needed here. */
     .timeline__icon-wrap {
         width: var(--size-icon-md);
         height: var(--size-icon-md);
