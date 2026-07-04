@@ -1,0 +1,1432 @@
+/* ===================================================================
+   NAVBAR.CSS — OrbitalX
+   Desktop-first. Mobile menu reversal at bottom media query — this
+   file owns flipping base.css's `.navbar__hamburger,
+   .navbar__mobile-menu { display: none }` back on below the
+   breakpoint.
+
+   ASSUMED JS HOOKS (confirm or rename):
+   - .navbar--scrolled          → added on scroll past hero
+   - .navbar__mobile-menu--open → added when hamburger is tapped
+   =================================================================== */
+
+/* ===================================================================
+   1. NAVBAR SHELL
+   =================================================================== */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: var(--z-index-sticky);
+    background-color: var(--bg-surface);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+    transition: background-color var(--transition-base)
+        var(--transition-easing-standard);
+}
+
+/* JS-added once user scrolls past hero — tightens the glass and adds
+   depth so the bar reads as "docked" rather than floating over
+   content indefinitely. */
+.navbar--scrolled {
+    background-color: var(--bg-secondary);
+    box-shadow: var(--shadow-md);
+}
+
+.navbar__inner {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--container-padding-inline);
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xl);
+}
+
+/* ===================================================================
+   2. LOGO
+   =================================================================== */
+
+.navbar__logo {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-black);
+    letter-spacing: 0.02em;
+    color: var(--color-neutral-0);
+    flex-shrink: 0;
+}
+
+/* ===================================================================
+   3. DESKTOP NAV LINKS
+   =================================================================== */
+
+.navbar__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xl);
+    flex: 1;
+    justify-content: center;
+}
+
+.navbar__link {
+    position: relative;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-neutral-300);
+    padding-block: var(--space-2xs);
+    transition: color var(--transition-fast) var(--transition-easing-standard);
+}
+
+/* Underline-on-hover via pseudo-element instead of a border — avoids
+   layout shift from a border suddenly appearing. */
+.navbar__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: var(--border-width-thin);
+    background-color: var(--color-brand-secondary-light);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition-fast)
+        var(--transition-easing-standard);
+}
+
+.navbar__link:hover {
+    color: var(--color-neutral-0);
+}
+
+.navbar__link:hover::after {
+    transform: scaleX(1);
+}
+
+/* ===================================================================
+   4. DESKTOP ACTIONS
+   =================================================================== */
+
+.navbar__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+
+/* Login/Launch buttons already fully styled by .btn/.btn--primary/
+   .btn--secondary in base.css — no overrides needed here. Resist the
+   urge to re-pad or re-color these locally; if navbar buttons ever
+   need to look different from hero buttons, that's a variant
+   (.btn--sm), not a one-off .navbar__actions .btn override. */
+
+/* ===================================================================
+   5. HAMBURGER (built here, hidden until mobile breakpoint below)
+   =================================================================== */
+
+.navbar__hamburger {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-2xs);
+    width: var(--size-icon-lg);
+    height: var(--size-icon-lg);
+}
+
+.navbar__hamburger span {
+    display: block;
+    width: 100%;
+    height: var(--border-width-medium);
+    background-color: var(--color-neutral-0);
+    border-radius: var(--radius-pill);
+    transition:
+        transform var(--transition-fast) var(--transition-easing-standard),
+        opacity var(--transition-fast) var(--transition-easing-standard);
+}
+
+/* ==========================================================================
+   HAMBURGER ACTIVE
+   ========================================================================== */
+
+.navbar__hamburger--active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.navbar__hamburger--active span:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar__hamburger--active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ==========================================================================
+   ACTIVE NAV LINKS
+   ========================================================================== */
+
+.navbar__link.active,
+.navbar__mobile-link.active {
+    color: var(--color-neutral-0);
+}
+
+.navbar__link.active::after {
+    transform: scaleX(1);
+}
+
+.navbar__mobile-link.active {
+    color: var(--color-brand-secondary-light);
+}
+
+/* ===================================================================
+   6. MOBILE MENU PANEL (built here, hidden until mobile breakpoint)
+   =================================================================== */
+
+.navbar__mobile-menu {
+    position: fixed;
+    top: 5rem; /* matches .navbar__inner height — keep these two
+                  values in sync if navbar height ever changes */
+    left: 0;
+    width: 100%;
+    max-height: calc(100vh - 5rem);
+    overflow-y: auto;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding: var(--space-xl) var(--container-padding-inline);
+    background-color: var(--bg-secondary);
+    border-bottom: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+    box-shadow: var(--shadow-lg);
+}
+
+.navbar__mobile-link {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-neutral-300);
+    padding-block: var(--space-sm);
+    border-bottom: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+}
+
+.navbar__mobile-link:hover {
+    color: var(--color-neutral-0);
+}
+
+.navbar__mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.navbar__mobile-actions .btn {
+    width: 100%;
+}
+
+/* ===================================================================
+   7. MOBILE BREAKPOINT — reverses base.css desktop defaults
+   =================================================================== */
+
+@media (max-width: 960px) {
+    .navbar__nav,
+    .navbar__actions {
+        display: none;
+    }
+
+    .navbar__hamburger {
+        display: flex;
+    }
+
+    .navbar__mobile-menu {
+        display: none; /* still hidden until --open is toggled */
+    }
+
+    .navbar__mobile-menu--open {
+        display: flex;
+    }
+}
+
+/* ===================================================================
+   HERO.CSS — OrbitalX
+   Desktop-first. Owns the fixed-navbar offset (5rem, must match
+   .navbar__inner height in navbar.css — keep these two in sync).
+
+   DECISION: .hero__meta is NOT absolutely positioned. It's a flex
+   sibling with align-self: flex-start, floating top-right without
+   overlapping .hero__content. See chat for reasoning if you want the
+   overlapping-card version instead — different implementation.
+   =================================================================== */
+
+/* ===================================================================
+   1. HERO SHELL
+   =================================================================== */
+
+.hero {
+    position: relative;
+    min-height: 100vh;
+    padding-top: 5rem; /* offsets fixed .navbar — sync with navbar.css */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+
+    /* 
+       Layered Background Architecture:
+       Layer 1 & 2: Soft brand-tint glows for atmosphere.
+       Layer 3: Repeating dot-field stars.
+       Layer 4 (Bottom): The 16:9 space background image asset.
+    */
+    background-image:
+        radial-gradient(
+            circle at 80% 20%,
+            var(--bg-brand-tint) 0%,
+            transparent 55%
+        ),
+        radial-gradient(
+            circle at 10% 90%,
+            var(--bg-brand-tint) 0%,
+            transparent 45%
+        ),
+        radial-gradient(var(--color-neutral-700) 1px, transparent 1px),
+        url(../assests/hero-img.png); /* Replace with your actual image URL */
+
+    background-size:
+        auto,
+        auto,
+        48px 48px,
+        cover; /* 'cover' ensures the 16:9 image fills the 100vh space without distortion */
+
+    background-position:
+        transparent,
+        transparent,
+        transparent,
+        center center; /* Keeps the core of your space image perfectly centered */
+
+    background-repeat: no-repeat, no-repeat, repeat, no-repeat;
+}
+
+.hero__inner {
+    max-width: var(--container-max);
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--container-padding-inline);
+    padding-block: var(--space-4xl);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2xl);
+}
+
+/* ===================================================================
+   2. CONTENT COLUMN
+   =================================================================== */
+
+.hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    max-width: var(--container-md);
+}
+
+.hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-2xs) var(--space-md);
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-glass);
+    border: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.06em;
+    color: var(--color-neutral-300);
+}
+
+.hero__badge-dot {
+    width: var(--space-2xs);
+    height: var(--space-2xs);
+    border-radius: var(--radius-circle);
+    background-color: var(--color-brand-secondary-light);
+    animation: pulse-dot 2s var(--transition-easing-standard) infinite;
+}
+
+.hero__title {
+    /* base.css h1 already sets weight/line-height/color — this only
+       overrides size, since hero needs the biggest scale step on the
+       page and h1 elsewhere (there isn't one elsewhere, but keeping
+       the override local rather than inflating the global h1 rule) */
+    font-size: var(--font-size-4xl);
+}
+
+.hero__description {
+    font-size: var(--font-size-md);
+    max-width: 42ch; /* prevents the description from stretching full
+                         column width and hurting line-length legibility */
+}
+
+.hero__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+}
+
+/* ===================================================================
+   3. STATS ROW
+   =================================================================== */
+
+.hero__stat-wrapper {
+    display: flex;
+    gap: var(--space-2xl);
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+    width: 100%;
+}
+
+.hero__stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+}
+
+.hero__stat-icon {
+    width: var(--size-icon-lg);
+    height: var(--size-icon-lg);
+    margin-bottom: var(--space-2xs);
+}
+
+.hero__stat-title {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-neutral-0);
+}
+
+.hero__stat-description {
+    font-size: var(--font-size-xs);
+    color: var(--color-neutral-500);
+}
+
+/* ===================================================================
+   4. META CARD (floats top-right, see file header note)
+   =================================================================== */
+
+.hero__meta {
+    flex-shrink: 0;
+    align-self: center; /* was flex-start — pinned the card to the top
+                            and left a dead void below it. Centering
+                            against .hero__content's full height closes
+                            that gap. */
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+    border: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-strong);
+    box-shadow: var(--shadow-lg);
+}
+
+.hero__meta-icon {
+    width: var(--size-avatar-lg);
+    height: var(--size-avatar-lg);
+    padding: var(--space-xs);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-brand-tint);
+}
+
+.hero__meta-badge {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-brand-secondary-light);
+}
+
+.hero__meta-title {
+    font-size: var(--font-size-base);
+}
+
+.hero__meta-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-400);
+}
+
+.hero__meta-status-dot {
+    width: var(--space-2xs);
+    height: var(--space-2xs);
+    border-radius: var(--radius-circle);
+    background-color: var(--color-success);
+    animation: pulse-dot 2s var(--transition-easing-standard) infinite;
+}
+
+/* ===================================================================
+   5. SCROLL INDICATOR
+   =================================================================== */
+
+.hero__scroll {
+    position: absolute;
+    bottom: var(--space-2xl);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    animation: bounce-y 2s var(--transition-easing-standard) infinite;
+}
+
+.hero__scroll-title {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-neutral-500);
+}
+
+.hero__scroll-icon {
+    width: var(--size-icon-sm);
+    height: var(--size-icon-sm);
+    opacity: var(--opacity-hover);
+}
+
+/* ===================================================================
+   6. ANIMATIONS
+   Shared by badge dot + status dot, and scroll indicator. Reduced-
+   motion users already get these zeroed out globally by reset.css.
+   =================================================================== */
+
+@keyframes pulse-dot {
+    0%,
+    100% {
+        opacity: var(--opacity-full);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+    50% {
+        opacity: var(--opacity-hover);
+    }
+}
+
+@keyframes bounce-y {
+    0%,
+    100% {
+        transform: translate(-50%, 0);
+    }
+    50% {
+        transform: translate(-50%, var(--space-xs));
+    }
+}
+
+/* ===================================================================
+   7. MOBILE BREAKPOINT
+   Matches navbar.css's 960px — see open item on adding real
+   --breakpoint-* tokens instead of repeating this number per file.
+   =================================================================== */
+
+@media (max-width: 960px) {
+    .hero__inner {
+        flex-direction: column;
+        align-items: stretch;
+        padding-block: var(--space-2xl);
+    }
+
+    .hero__content {
+        padding-top: 0;
+        max-width: none;
+    }
+
+    .hero__meta {
+        width: 100%;
+    }
+
+    .hero__stat-wrapper {
+        flex-wrap: wrap;
+        row-gap: var(--space-lg);
+    }
+}
+
+/* ===================================================================
+   TECHNOLOGY.CSS — OrbitalX
+   Desktop-first.
+
+   DEPENDENCY: .technology__meta-dot reuses @keyframes pulse-dot,
+   defined in hero.css. If these files aren't concatenated/loaded in
+   the same cascade (right now index.html only links ONE index.css —
+   see note below), this animation silently no-ops. Flagging now
+   before it becomes a "why isn't this pulsing" bug hunt later.
+
+   OPEN ITEM: your index.html has a single
+   <link rel="stylesheet" href="index.css" /> — but we're producing
+   reset.css / base.css / navbar.css / hero.css / technology.css as
+   separate files. Either concat these into one index.css before
+   shipping, or switch to multiple <link> tags in source order
+   (reset → base → navbar → hero → technology → ...). Not fixing this
+   silently — confirm which approach before this goes live.
+   =================================================================== */
+
+/* ===================================================================
+   1. SECTION SHELL
+   =================================================================== */
+
+.technology {
+    padding-block: var(--space-4xl);
+}
+
+/* ===================================================================
+   2. CARD GRID
+   =================================================================== */
+
+.technology__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xl);
+    margin-bottom: var(--space-3xl);
+}
+
+.technology__card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+    border: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+    transition:
+        transform var(--transition-base) var(--transition-easing-standard),
+        border-color var(--transition-base) var(--transition-easing-standard),
+        box-shadow var(--transition-base) var(--transition-easing-standard);
+}
+
+.technology__card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-color-brand);
+    box-shadow: var(--shadow-md);
+}
+
+.technology__card-img__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-avatar-md);
+    height: var(--size-avatar-md);
+    margin-bottom: var(--space-lg);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-brand-tint);
+}
+
+.technology__card-img {
+    width: var(--size-icon-lg);
+    height: var(--size-icon-lg);
+}
+
+.technology__card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    flex: 1;
+}
+
+.technology__card-body .btn--tertiary {
+    margin-top: auto; /* pins the "Learn More" link to the bottom so
+                          cards with shorter descriptions don't end
+                          with the CTA floating mid-card while a
+                          neighbor's CTA sits lower */
+    padding-top: var(--space-sm);
+}
+
+/* ===================================================================
+   3. META BAND — full-width telemetry strip (stays inside .container,
+   spans the full content width of the section, not the viewport)
+   =================================================================== */
+
+.technology__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.technology__meta-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.technology__meta-icon {
+    width: var(--size-avatar-sm);
+    height: var(--size-avatar-sm);
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-brand-tint);
+}
+
+.technology__meta-title {
+    margin-right: auto; /* pushes the status pill to the far right of
+                            the header row */
+}
+
+.technology__meta-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-2xs) var(--space-md);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.technology__meta-dot {
+    width: var(--space-2xs);
+    height: var(--space-2xs);
+    border-radius: var(--radius-circle);
+    background-color: var(--color-success);
+    animation: pulse-dot 2s var(--transition-easing-standard) infinite;
+}
+
+/* Full width of the section's content area (not a viewport breakout —
+   it stays inside .container like everything else on the page). */
+.technology__meta-stats__wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+/* Overrides base.css's img[src="#"] placeholder rule (0,1,1
+   specificity) — a single class here would lose that fight, so this
+   is a two-class compound selector (0,2,0) specifically to win it.
+   See file header note. */
+.technology__meta-stats__wrapper .technology__meta-bg-img {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border: none;
+    object-fit: cover;
+    /* Darkens the bg image for text legibility using the existing
+       overlay token — an inset box-shadow paints on top of a
+       replaced element's own image content, so this works even
+       though img can't take a second background-image layer. */
+    box-shadow: inset 0 0 0 1000px var(--bg-overlay);
+}
+
+.technology__meta-body {
+    position: relative; /* no z-index set — see note: this and the bg
+                            img both resolve to z-index:auto, and
+                            paint order then follows DOM order, so
+                            this (later in source) naturally renders
+                            above the image. No z-index token needed. */
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-2xl) var(--space-xl);
+}
+
+/* ===================================================================
+   4. STATS (naming note: markup calls these .technology__card-stats
+   even though they live in .meta, not a card — see chat flag. Styled
+   under their actual class name as given.) */
+
+.technology__card-stats {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+}
+
+.meta__stats-title {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-neutral-400);
+}
+
+.meta__stats-value {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-neutral-0);
+}
+
+/* ===================================================================
+   5. MOBILE BREAKPOINT
+   =================================================================== */
+
+@media (max-width: 960px) {
+    .technology__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .technology__meta-body {
+        flex-wrap: wrap;
+        gap: var(--space-lg);
+    }
+}
+
+/* ===================================================================
+   MISSION.CSS — OrbitalX
+   Desktop-first.
+
+   See chat: .mission__card-progress mixes percentages and status
+   dates under one class (styled as a label, not a bar — data doesn't
+   support a real bar). .mission__card-badge has no status modifiers,
+   so all badges render identically regardless of "In Progress" /
+   "Upcoming" / "Planned" / "Concept" text. Both are HTML-level gaps,
+   not fixed here.
+   =================================================================== */
+
+/* ===================================================================
+   1. SECTION SHELL
+   =================================================================== */
+
+.mission {
+    padding-block: var(--space-4xl);
+}
+
+/* ===================================================================
+   2. GRID
+   =================================================================== */
+
+.mission__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xl);
+}
+
+.mission__card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+    border: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+    overflow: hidden; /* clips the image to the card's rounded corners
+                          and contains the hover zoom below */
+    transition:
+        transform var(--transition-base) var(--transition-easing-standard),
+        border-color var(--transition-base) var(--transition-easing-standard),
+        box-shadow var(--transition-base) var(--transition-easing-standard);
+}
+
+.mission__card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-color-brand);
+    box-shadow: var(--shadow-md);
+}
+
+/* ===================================================================
+   3. IMAGE + BADGE
+   =================================================================== */
+
+.mission__card-img__wrap {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+
+.mission__card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow)
+        var(--transition-easing-standard);
+}
+
+.mission__card:hover .mission__card-img {
+    transform: scale(1.06);
+}
+
+.mission__card-badge {
+    position: absolute;
+    top: var(--space-md);
+    left: var(--space-md);
+    padding: var(--space-2xs) var(--space-md);
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-overlay);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-strong);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-neutral-0);
+}
+
+/* ===================================================================
+   4. CARD BODY
+   =================================================================== */
+
+.mission__card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    flex: 1;
+    padding: var(--space-lg);
+}
+
+.mission__card-progress__wrapper {
+    margin-top: auto; /* pins this row to the card's bottom edge
+                          regardless of description length */
+    padding-top: var(--space-sm);
+    width: 100%;
+    border-top: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+}
+
+.mission__card-progress {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.03em;
+    color: var(--color-brand-secondary-light);
+}
+
+/* ===================================================================
+   5. MOBILE BREAKPOINT
+   =================================================================== */
+
+@media (max-width: 960px) {
+    .mission__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===================================================================
+   SOLUTIONS.CSS — OrbitalX
+   Desktop-first.
+
+   See chat: .solutions__card-icon has no wrapper div (unlike
+   .technology__card-img__wrapper). Background/padding applied
+   directly to the <img> as a workaround — works via border-box, but
+   less flexible than a wrapper. Add the wrapper in HTML if you want
+   icon size and box size to be independently controllable later.
+   =================================================================== */
+
+/* ===================================================================
+   1. SECTION SHELL
+   =================================================================== */
+
+.solutions {
+    padding-block: var(--space-4xl);
+}
+
+/* ===================================================================
+   2. GRID — 4 cards, single row (not the 3-col pattern from
+   technology; 4 into 3 columns would orphan one card on its own row)
+   =================================================================== */
+
+.solutions__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-xl);
+}
+
+.solutions__card {
+    height: 100%;
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+    border: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+    transition:
+        transform var(--transition-base) var(--transition-easing-standard),
+        border-color var(--transition-base) var(--transition-easing-standard),
+        box-shadow var(--transition-base) var(--transition-easing-standard);
+}
+
+.solutions__card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-color-brand);
+    box-shadow: var(--shadow-md);
+}
+
+/* ===================================================================
+   3. CARD BODY
+   Only wrapper level that exists in this markup — carries the
+   padding the card itself has none of.
+   =================================================================== */
+
+.solutions__card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    height: 100%;
+    padding: var(--space-xl);
+}
+
+.solutions__card-icon {
+    box-sizing: border-box;
+    width: var(--size-avatar-lg);
+    height: var(--size-avatar-lg);
+    padding: var(--space-sm);
+    margin-bottom: var(--space-md);
+    background-color: var(--bg-brand-tint);
+    border-radius: var(--radius-md);
+    object-fit: contain;
+}
+
+.solutions__card-body .btn--tertiary {
+    margin-top: auto; /* same bottom-pin pattern as technology cards —
+                          keeps CTA aligned across cards of uneven
+                          description length */
+    padding-top: var(--space-sm);
+}
+
+/* ===================================================================
+   4. MOBILE BREAKPOINT
+   =================================================================== */
+
+@media (max-width: 960px) {
+    .solutions__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===================================================================
+   COMPANY.CSS — OrbitalX (timeline section)
+   Desktop-first. Horizontal timeline: line runs left-to-right, nodes
+   centered above/through it, content stacked below each node.
+   Reverts to a vertical stack under 960px — 5 horizontal columns
+   don't survive a narrow viewport, this isn't optional.
+
+   See prior flags (still open, still not fixed in HTML):
+   - every .timeline__icon has alt="Founding" regardless of content
+   - .timeline__grid is missing role="list"
+
+   STACKING: only .timeline__icon-wrap gets position:relative — same
+   DOM-order trick as technology.css, lifts it above the connecting
+   line without needing a z-index token.
+   =================================================================== */
+
+/* ===================================================================
+   1. SECTION SHELL
+   =================================================================== */
+
+.company {
+    padding-block: var(--space-4xl);
+}
+
+/* ===================================================================
+   2. TIMELINE GRID + CONNECTING LINE (horizontal)
+   =================================================================== */
+
+.timeline__grid {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    width: 100%;
+}
+
+/* Runs from first icon's center to last icon's center — same
+   equal-flex-width assumption as before: accurate as long as every
+   .timeline__item has equal width, which flex: 1 below guarantees. */
+.timeline__grid::before {
+    content: "";
+    position: absolute;
+    top: calc(var(--size-avatar-md) / 2);
+    left: calc(100% / 10); /* half of one 5-column flex-basis (100%/5 / 2) */
+    right: calc(100% / 10);
+    height: var(--border-width-thin);
+    background-color: var(--border-color-default);
+}
+
+/* ===================================================================
+   3. TIMELINE ITEM
+   =================================================================== */
+
+.timeline__item {
+    flex: 1;
+    min-width: 0; /* required so text can wrap instead of forcing the
+                      flex item wider than its share of the row */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-md);
+}
+
+.timeline__icon-wrap {
+    position: relative; /* lifts this above ::before — see file header */
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-avatar-md);
+    height: var(--size-avatar-md);
+    border-radius: var(--radius-circle);
+    background-color: var(--bg-secondary);
+    border: var(--border-width-medium) var(--border-style-default)
+        var(--color-brand-primary);
+}
+
+/* Same specificity override as before — beats base.css's img[src="#"]
+   fallback (0,1,1) with a compound selector (0,2,0). */
+.timeline__icon-wrap .timeline__icon {
+    display: block;
+    width: var(--size-icon-lg);
+    height: var(--size-icon-lg);
+    min-height: 0;
+    border: none;
+    background-color: transparent;
+    object-fit: contain;
+}
+
+/* ===================================================================
+   4. TIMELINE BODY
+   =================================================================== */
+
+.timeline__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2xs);
+}
+
+.timeline__year {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.05em;
+    color: var(--color-brand-secondary-light);
+}
+
+.timeline__heading {
+    margin-top: var(--space-2xs);
+}
+
+.timeline__description {
+    max-width: 28ch; /* tighter than the vertical version's 60ch —
+                         each column has roughly a quarter of the
+                         horizontal room */
+}
+
+/* ===================================================================
+   5. MOBILE BREAKPOINT — revert to vertical stack
+   =================================================================== */
+
+@media (max-width: 960px) {
+    .timeline__grid {
+        flex-direction: column;
+        max-width: var(--container-md);
+        margin-inline: auto;
+    }
+
+    .timeline__grid::before {
+        top: 0;
+        bottom: 0;
+        left: calc(var(--size-icon-lg) / 2);
+        right: auto;
+        width: var(--border-width-thin);
+        height: auto;
+    }
+
+    .timeline__item {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: left;
+        width: 100%;
+        padding-bottom: var(--space-2xl);
+    }
+
+    .timeline__item:last-child {
+        padding-bottom: 0;
+    }
+
+    .timeline__icon-wrap {
+        width: var(--size-icon-lg);
+        height: var(--size-icon-lg);
+    }
+
+    .timeline__body {
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .timeline__description {
+        max-width: 60ch;
+    }
+}
+
+/* ===================================================================
+   RESOURCES.CSS — OrbitalX
+   Desktop-first.
+
+   CRITICAL: .resources__card-body is used TWICE per card — once as
+   the outer icon+text container, once nested inside itself as the
+   text-only stack. Same class, two roles. Handled below via child vs
+   descendant combinators (see chat) — this is a workaround, not a
+   real fix. Rename the inner one in HTML if you want this resolved
+   properly instead of selector-gymnastics'd around.
+
+   Also see chat: alt="research" on every bg-img regardless of card
+   topic, and two icons wrongly sharing alt="Research Papers". Third
+   occurrence of this exact copy-paste pattern (timeline had it too).
+   =================================================================== */
+
+/* ===================================================================
+   1. SECTION SHELL
+   =================================================================== */
+
+.resources {
+    padding-block: var(--space-4xl);
+}
+
+/* ===================================================================
+   2. GRID — 4 cards, single row (same reasoning as .solutions__grid)
+   =================================================================== */
+
+.resources__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-xl);
+}
+
+.resources__card {
+    position: relative;
+    height: 100%;
+    min-height: 320px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background-color: var(--bg-surface);
+    border: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+    transition:
+        transform var(--transition-base) var(--transition-easing-standard),
+        border-color var(--transition-base) var(--transition-easing-standard),
+        box-shadow var(--transition-base) var(--transition-easing-standard);
+}
+
+.resources__card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-color-brand);
+    box-shadow: var(--shadow-md);
+}
+
+/* ===================================================================
+   3. BACKGROUND IMAGE
+   Same override pattern as technology__meta-bg-img: beats base.css's
+   img[src="#"] fallback specificity, fills the card, darkened via
+   inset box-shadow so the text stack stays legible over any photo.
+   =================================================================== */
+
+.resources__card .resources__card-bg-img {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border: none;
+    object-fit: cover;
+    box-shadow: inset 0 0 0 1000px var(--bg-overlay);
+}
+
+/* ===================================================================
+   4. OUTER BODY — direct child of .resources__card only
+   =================================================================== */
+
+.resources__card > .resources__card-body {
+    position: relative; /* lifts above the bg-img — same DOM-order
+                            trick used throughout this build */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-xl);
+}
+
+/* ===================================================================
+   5. ICON
+   =================================================================== */
+
+.resources__card-icon__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-avatar-md);
+    height: var(--size-avatar-md);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-brand-tint);
+    border: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+}
+
+.resources__card-icon {
+    width: var(--size-icon-lg);
+    height: var(--size-icon-lg);
+}
+
+/* ===================================================================
+   6. INNER BODY — nested instance of the same class, isolated via
+   descendant combinator so it never collides with rule 4 above
+   =================================================================== */
+
+.resources__card-body .resources__card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    flex: 1;
+}
+
+.resources__card-body .resources__card-body .btn--tertiary {
+    margin-top: auto; /* same bottom-pin CTA pattern as every other
+                          card component in this build */
+    padding-top: var(--space-xs);
+}
+
+/* ===================================================================
+   7. MOBILE BREAKPOINT
+   =================================================================== */
+
+@media (max-width: 960px) {
+    .resources__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===================================================================
+   FOOTER.CSS — OrbitalX
+   Desktop-first.
+
+   CRITICAL: "Programs" column uses <p class="footer__link"> — same
+   class as the real <a> nav links in "Quick Links", but not
+   interactive at all (no href, not focusable, not screen-reader
+   linked). Mitigated below via element-type selectors (a vs p) so the
+   fake ones stop looking clickable. Real fix is in your HTML, not
+   here — either make them real links or give them a distinct class.
+
+   Also: footer links to #missions; actual section id is "mission"
+   (see navbar.css note — same typo, third occurrence site-wide now).
+   =================================================================== */
+
+/* ===================================================================
+   1. FOOTER SHELL
+   =================================================================== */
+
+.footer {
+    padding-block: var(--space-3xl);
+    background-color: var(--bg-secondary);
+    border-top: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-default);
+}
+
+/* ===================================================================
+   2. GRID
+   Brand column gets double width — it carries a description
+   paragraph, the other two columns are just link lists.
+   =================================================================== */
+
+.footer__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: var(--space-2xl);
+}
+
+.footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+/* ===================================================================
+   3. BRAND COLUMN
+   =================================================================== */
+
+.footer__brand-name {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-black);
+    color: var(--color-neutral-0);
+}
+
+.footer__brand-description {
+    max-width: 36ch;
+    font-size: var(--font-size-sm);
+}
+
+/* ===================================================================
+   4. LINK COLUMNS
+   =================================================================== */
+
+.footer__col-title {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-neutral-500);
+    margin-bottom: var(--space-2xs);
+}
+
+.footer__nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.footer__link {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-400);
+    width: fit-content; /* prevents the fake <p> links from claiming
+                            full row width and creating an oversized
+                            invisible hover/click target */
+}
+
+/* Real links only — hover feedback signals genuine interactivity. */
+a.footer__link {
+    transition: color var(--transition-fast) var(--transition-easing-standard);
+}
+
+a.footer__link:hover {
+    color: var(--color-neutral-0);
+}
+
+/* Fake links — see file header. Explicitly non-interactive styling
+   so they stop visually impersonating the real nav beside them. */
+p.footer__link {
+    cursor: default;
+    opacity: var(--opacity-disabled);
+}
+
+/* ===================================================================
+   5. MOBILE BREAKPOINT
+   =================================================================== */
+
+@media (max-width: 960px) {
+    .footer__grid {
+        grid-template-columns: 1fr 1fr;
+        row-gap: var(--space-2xl);
+    }
+
+    .footer__col:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .footer__brand-description {
+        max-width: none;
+    }
+}

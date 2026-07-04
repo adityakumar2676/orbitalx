@@ -1,0 +1,278 @@
+/* ===================================================================
+   BASE.CSS — OrbitalX
+   Global styles, typography, and classes reused identically across
+   every section (container, btn, section__header, accent). Desktop
+   is the base state — no media queries here; breakpoints belong in
+   component files where layout actually changes.
+   =================================================================== */
+
+/* ===================================================================
+   1. DOCUMENT BASE
+   =================================================================== */
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--color-neutral-100);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    overflow-x: hidden; /* hero__meta / hero__scroll are positioned
+                            elements — guard against horizontal scroll
+                            bugs before they happen, not after */
+}
+
+/* Selection + scrollbar are cheap brand-consistency wins on a dark
+   theme — default OS selection/scrollbar reads as unfinished. */
+::selection {
+    background-color: var(--bg-brand-tint);
+    color: var(--color-neutral-0);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-brand-primary-dark);
+    border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-brand-primary);
+}
+
+/* ===================================================================
+   2. TYPOGRAPHY
+   =================================================================== */
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--font-family-heading);
+    color: var(--color-neutral-0);
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-black);
+    line-height: var(--line-height-tight);
+}
+
+h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+}
+
+h3 {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-snug);
+}
+
+h4 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-snug);
+}
+
+p {
+    color: var(--color-neutral-400);
+    line-height: var(--line-height-relaxed);
+}
+
+/* .accent is used inside h1/h2/p/footer-brand across every section
+   (hero__title, section__header-title, footer__brand-name) — always
+   the brand-color word inside an otherwise neutral heading. */
+.accent {
+    color: var(--color-brand-primary-light);
+}
+
+/* ===================================================================
+   3. LAYOUT PRIMITIVE — .container
+   Every section wraps its content in .container. One definition,
+   consumed everywhere. Do not redefine per-section.
+   =================================================================== */
+
+.container {
+    width: 100%;
+    max-width: var(--container-xl);
+    margin-inline: auto;
+    padding-inline: var(--container-padding-inline);
+}
+
+/* ===================================================================
+   4. SECTION HEADER PATTERN
+   Identical markup in technology, mission, solutions, company,
+   resources: header.section__header > .section__header-center >
+   label + title + description, center-aligned.
+   =================================================================== */
+
+.section__header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-3xl);
+}
+
+.section__header-center {
+    max-width: var(--container-md);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.section__header-label {
+    display: inline-block;
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-brand-secondary-light);
+}
+
+.section__header-title {
+    font-size: var(--font-size-2xl);
+}
+
+.section__header-description {
+    font-size: var(--font-size-md);
+    color: var(--color-neutral-400);
+}
+
+/* ===================================================================
+   5. BUTTONS
+   Three variants used identically in navbar, hero, and every card's
+   CTA link: btn--primary (filled), btn--secondary (outlined),
+   btn--tertiary (text + arrow, no chrome).
+   =================================================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+    border-radius: var(--radius-pill);
+    transition: all var(--transition-fast) var(--transition-easing-standard);
+}
+
+.btn--primary {
+    padding: var(--space-sm) var(--space-lg);
+    background-color: var(--color-brand-primary);
+    color: var(--color-neutral-0);
+    box-shadow: var(--shadow-brand-glow);
+}
+
+.btn--primary:hover {
+    background-color: var(--color-brand-primary-dark);
+}
+
+.btn--secondary {
+    padding: var(--space-sm) var(--space-lg);
+    background-color: transparent;
+    color: var(--color-neutral-0);
+    border: var(--border-width-thin) var(--border-style-default)
+        var(--border-color-strong);
+}
+
+.btn--secondary:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--color-brand-secondary);
+}
+
+/* Used inside every *__card as a bare "Learn More →" link — no
+   background, no border, just brand-colored text that shifts on
+   hover. Padding stays 0: it sits inside card body flow, not a
+   standalone button. */
+.btn--tertiary {
+    padding: 0;
+    background-color: transparent;
+    color: var(--color-brand-secondary-light);
+    border-radius: 0;
+}
+
+.btn--tertiary:hover {
+    color: var(--color-brand-secondary);
+    gap: var(
+        --space-sm
+    ); /* nudges the arrow right on hover —
+                              cheap motion, no extra markup needed */
+}
+
+/* ===================================================================
+   6. UTILITIES
+   =================================================================== */
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Broken-img fallback: resources__card-icon and resources__card-bg-img
+   currently ship with src="#". Without this, a missing image is a
+   blank alt-text box that reads as a bug, not a placeholder. This is
+   a floor, not a fix — swap real assets before launch. */
+img[src="#"],
+img:not([src]),
+img[src=""] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--size-avatar-md);
+    background-color: var(--bg-glass);
+    border: var(--border-width-thin) dashed var(--border-color-default);
+    color: var(--color-neutral-500);
+    font-size: var(--font-size-xs);
+}
+
+/* ===================================================================
+   7. NAVBAR MOBILE MENU — DESKTOP BASELINE
+   Markup includes .navbar__mobile-menu and .navbar__hamburger
+   unconditionally. On desktop these must never render, regardless of
+   JS state, or they flash open before any breakpoint/script runs.
+   Component pass (navbar.css) owns the mobile breakpoint that
+   reverses this.
+   =================================================================== */
+
+.navbar__hamburger,
+.navbar__mobile-menu {
+    display: none;
+}
+
+.hero,
+.technology,
+.mission,
+.solutions,
+.company,
+.resources,
+.footer {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+        opacity 700ms var(--transition-easing-standard),
+        transform 700ms var(--transition-easing-standard);
+}
+
+.section--visible {
+    opacity: 1;
+    transform: translateY(0);
+}

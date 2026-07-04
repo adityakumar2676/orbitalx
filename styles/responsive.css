@@ -1,0 +1,155 @@
+/* ===================================================================
+   RESPONSIVE.CSS — OrbitalX
+   MUST be linked LAST — after reset, base, navbar, hero, technology,
+   mission, solutions, company, resources, footer. At widths under
+   480px, this file's rules and each component's own 960px block are
+   both simultaneously true; source order decides the winner at equal
+   specificity, and this file needs to win.
+
+   BREAKPOINT REFERENCE (hardcoded on purpose — CSS custom properties
+   cannot be used inside @media feature queries in plain CSS; there is
+   no var(--breakpoint-x) that works here without a Sass/PostCSS build
+   step, which this project doesn't have). If any of these three
+   numbers change, grep the whole codebase — they are NOT tokens:
+     - 960px  → tablet-landscape / small-laptop (defined per-file)
+     - 768px  → tablet-portrait   (defined here)
+     - 480px  → phone             (defined here)
+
+   Typography and container padding already use clamp() and don't
+   need breakpoint overrides — only structural layout (columns, flex
+   direction, fixed heights) does. That's all this file touches.
+   =================================================================== */
+
+/* ===================================================================
+   1. TABLET (max-width: 768px)
+   =================================================================== */
+
+@media (max-width: 768px) {
+    /* Navbar height shrinks to reclaim vertical space on shorter
+       viewports. This number is coupled to .hero's padding-top and
+       .navbar__mobile-menu's top offset — all three MUST move
+       together or the fixed-navbar-clipping bug from hero.css comes
+       back. */
+    .navbar__inner {
+        height: 4.5rem;
+    }
+
+    .navbar__mobile-menu {
+        top: 4.5rem;
+        max-height: calc(100vh - 4.5rem);
+    }
+
+    .hero {
+        padding-top: 4.5rem;
+    }
+
+    /* Section vertical rhythm tightens — 4xl (96px→144px via clamp)
+       is too much air once the viewport itself is this narrow. */
+    .hero,
+    .technology,
+    .mission,
+    .solutions,
+    .company,
+    .resources {
+        padding-block: var(--space-3xl);
+    }
+
+    .section__header {
+        margin-bottom: var(--space-2xl);
+    }
+
+    /* Hero stats: 4-across is cramped under 768px even wrapped. */
+    .hero__stat-wrapper {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-lg);
+    }
+
+    /* Timeline already flips to vertical at 960px (see company.css) —
+       just tighten its spacing further here. */
+    .timeline__item {
+        padding-bottom: var(--space-xl);
+    }
+
+    .footer__grid {
+        gap: var(--space-xl);
+    }
+}
+
+/* ===================================================================
+   2. PHONE (max-width: 480px)
+   =================================================================== */
+
+@media (max-width: 480px) {
+    .navbar__inner {
+        height: 4rem;
+    }
+
+    .navbar__mobile-menu {
+        top: 4rem;
+        max-height: calc(100vh - 4rem);
+    }
+
+    .hero {
+        padding-top: 4rem;
+    }
+
+    .hero,
+    .technology,
+    .mission,
+    .solutions,
+    .company,
+    .resources {
+        padding-block: var(--space-2xl);
+    }
+
+    /* Every card grid collapses to a single column — this is the one
+       real override that fights each component's own 960px 2-column
+       rule, which is exactly why load order matters (see header). */
+    .technology__grid,
+    .mission__grid,
+    .solutions__grid,
+    .resources__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero__stat-wrapper {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-md);
+    }
+
+    .hero__actions {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .hero__actions .btn {
+        width: 100%;
+    }
+
+    .hero__meta {
+        width: 100%;
+    }
+
+    /* Timeline nodes shrink further; the connecting line offset
+       (left: calc(size-icon-lg / 2), set in company.css's own 960px
+       block) still lines up since it's already keyed to
+       --size-icon-lg, not a fixed pixel value. */
+    .timeline__icon-wrap {
+        width: var(--size-icon-md);
+        height: var(--size-icon-md);
+    }
+
+    .footer__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer__col:first-child {
+        grid-column: auto; /* undo the 960px span-all rule — at true
+                               single-column width it's a no-op
+                               either way, but stating it explicitly
+                               avoids relying on an override further
+                               up the cascade */
+    }
+}
